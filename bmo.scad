@@ -157,8 +157,11 @@ module connected_dummies() {
 
 module inset_hole(r=inset_hole_width / 2, h=inset_hole_length) {
   difference() {
-    cylinder(r1=r, r2=r, h=h);
-    cylinder(r1=2.5/2, r2=2.5/2, h=3.8);
+    union() {
+      cylinder(r1=r, r2=r, h=h, $fn = 30);
+      children();
+    }
+    cylinder(r1=2.5/2, r2=2.5/2, h=3.8, $fn = 30);
   }
 }
 
@@ -212,11 +215,11 @@ module pi_beam() {
 }
 
 // dummies
-// translate([
-//   bmo_screen_x,
-//   bmo_screen_y - tft_pcb_height,
-//   bmo_screen_z
-// ]) tft_dummy();
+translate([
+  bmo_screen_x,
+  bmo_screen_y - tft_pcb_height,
+  bmo_screen_z
+]) tft_dummy();
 
 // translate([
 //   bmo_body_width - pi_pcb_width - bmo_case_thickness,
@@ -244,10 +247,13 @@ union() {
       rotate([180, 0, 0])
         punch_pi_holes();
   }
+
   translate([bmo_screen_punch_x, bmo_screen_punch_y, bmo_body_zheight - bmo_screen_punch_radius]) screen_punch_rims();
+
+  // pi beam
   translate([
     bmo_case_thickness,
-    bmo_body_height - bmo_case_thickness - pi_pcb_height,
+    bmo_body_height - bmo_case_thickness - pi_pcb_height - inset_hole_width + pi_pcb_hole_positions[0][1] + (inset_hole_width / 2),
     pi_hardware_zheight + bmo_body_radius + inset_hole_length
   ]) pi_beam();
 
@@ -276,13 +282,10 @@ union() {
     bmo_body_height - bmo_case_thickness - pi_pcb_hole_positions[0][1],
     pi_hardware_zheight + bmo_body_radius
   ]) {
-    inset_hole(h = 10);
+    inset_hole(h = 10) {
+      translate([-inset_hole_width / 2, 0, 0]) cube([inset_hole_width, inset_hole_width, 10]);
+    }
   }
-  translate([
-    bmo_body_width - pi_pcb_width - bmo_case_thickness + pi_pcb_hole_positions[0][0] - (inset_hole_width / 2),
-    bmo_body_height - bmo_case_thickness - pi_pcb_hole_positions[0][1],
-    pi_hardware_zheight + bmo_body_radius
-  ]) cube([inset_hole_width, inset_hole_width, 10]);
 
   translate([
     bmo_body_width - pi_pcb_width - bmo_case_thickness + pi_pcb_hole_positions[1][0],
@@ -305,26 +308,23 @@ union() {
     bmo_body_height - bmo_case_thickness - pi_pcb_hole_positions[3][1],
     pi_hardware_zheight + bmo_body_radius
   ]) {
-    inset_hole(h = 10);
+    inset_hole(h = 10) {
+      translate([-inset_hole_width / 2, 0, 0]) cube([inset_hole_width, inset_hole_width, 10]);
+    }
   }
-  translate([
-    bmo_body_width - pi_pcb_width - bmo_case_thickness + pi_pcb_hole_positions[3][0] - (inset_hole_width / 2),
-    bmo_body_height - bmo_case_thickness - pi_pcb_hole_positions[3][1],
-    pi_hardware_zheight + bmo_body_radius
-  ]) cube([inset_hole_width, inset_hole_width, 10]);
 }
 
 // body bottom
-difference() {
-  color([0, 0, 1, 0.5]) body(size = [bmo_body_width, bmo_body_height, bmo_body_zheight]);
-  translate([0, 0, bmo_body_radius])
-    cube(size = [bmo_body_width, bmo_body_height, bmo_body_zheight]);
-  // pi punch holes
-  translate([
-      bmo_body_width - pi_pcb_width - bmo_case_thickness,
-      bmo_body_height - bmo_case_thickness,
-      pi_hardware_zheight + bmo_body_radius
-    ])
-      rotate([180, 0, 0])
-        punch_pi_holes();
-}
+// difference() {
+//   color([0, 0, 1, 0.75]) body(size = [bmo_body_width, bmo_body_height, bmo_body_zheight]);
+//   translate([0, 0, bmo_body_radius])
+//     cube(size = [bmo_body_width, bmo_body_height, bmo_body_zheight]);
+//   // pi punch holes
+//   translate([
+//       bmo_body_width - pi_pcb_width - bmo_case_thickness,
+//       bmo_body_height - bmo_case_thickness,
+//       pi_hardware_zheight + bmo_body_radius
+//     ])
+//       rotate([180, 0, 0])
+//         punch_pi_holes();
+// }
