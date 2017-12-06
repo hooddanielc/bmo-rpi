@@ -214,6 +214,37 @@ module pi_beam() {
   cube([bmo_body_width - (bmo_case_thickness * 2), inset_hole_width, inset_hole_width]);
 }
 
+module camera_dummy() {
+  // origin is bottom left of pcb. the bottom has the tag,
+  // hanging down and the camera is pointed toward you
+  camera_pcb_width = 24;
+  camera_pcb_height = 25;
+  camera_pcb_zheight = 1.6;
+  camera_lens_width = 7.9;
+  camera_lens_height = 7.9;
+  camera_lens_zheight = 6.1;
+  camera_pcb_holes = [
+    [1.6, camera_pcb_height - 1.6],
+    [1.6, 8.5],
+    [camera_pcb_width - 1.6, 8.5],
+    [camera_pcb_width - 1.6, camera_pcb_height - 1.6]
+  ];
+  difference() {
+    union() {
+      cube([camera_pcb_width, camera_pcb_height, camera_pcb_zheight]);
+      translate([
+        (camera_pcb_width / 2) - (camera_lens_width / 2),
+        (camera_pcb_height / 2) - (camera_lens_height / 2),
+        camera_pcb_zheight
+      ]) cube([camera_lens_width, camera_lens_height, camera_lens_zheight]);
+    }
+    for (hole = camera_pcb_holes) {
+      translate([hole[0], hole[1], 0]) cylinder($fn=20, r1 = 1.0, r2 = 1.0, h = camera_pcb_zheight);
+    }
+  }
+
+}
+
 // dummies
 translate([
   bmo_screen_x,
@@ -221,13 +252,15 @@ translate([
   bmo_screen_z
 ]) tft_dummy();
 
-// translate([
-//   bmo_body_width - pi_pcb_width - bmo_case_thickness,
-//   bmo_body_height - bmo_case_thickness,
-//   pi_hardware_zheight + bmo_body_radius
-// ]) rotate([180, 0, 0]) {
-//   pi_dummy();
-// }
+translate([
+  bmo_body_width - pi_pcb_width - bmo_case_thickness,
+  bmo_body_height - bmo_case_thickness,
+  pi_hardware_zheight + bmo_body_radius
+]) rotate([180, 0, 0]) {
+  pi_dummy();
+}
+
+camera_dummy();
 
 // body
 union() {
