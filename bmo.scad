@@ -178,14 +178,18 @@ module inset_hole(r=inset_hole_width / 2, h=inset_hole_length) {
 
   hole_length = h / 4 * 3;
   eight_degree_taper = hole_length / tan(82);
-  hole_punch_width = 4 / 2;
+  hole_punch_width = 2;
+  rad1 = hole_punch_width;
+  rad2 = abs(hole_punch_width - eight_degree_taper);
 
   color([0, 0, 1, 1]) difference() {
     union() {
-      cylinder(r1=r, r2=r, h=h, $fn = 30);
+      cylinder(r1=r, r2=r, h=h, $fn = 100);
       children();
     }
-    cylinder(r1=hole_punch_width, r2=hole_punch_width - eight_degree_taper, h=hole_length, $fn = 30);
+    translate([0, 0, 0]) {
+      cylinder(r1=rad1, r2=rad2, h=h, $fn = 30);
+    }
   }
 }
 
@@ -278,6 +282,24 @@ module positioned_camera_inset_holes() {
   }
 }
 
+module corner_inset_hole(length = 20) {
+  inset_hole(h = length, flip = true) {
+    difference() {
+      union() {
+        translate([
+          -inset_hole_width / 2,
+          -inset_hole_width / 2,
+          0
+        ]) cube([inset_hole_width / 2, inset_hole_width / 2, length]);
+        translate([-inset_hole_width / 2, 0, 0]) cube([inset_hole_width / 2, inset_hole_width, length]);
+        translate([0, -inset_hole_width / 2, 0]) cube([inset_hole_width, inset_hole_width / 2, length]);
+      }
+      translate([inset_hole_width, 0, 0]) cylinder($fn = 100, r1=inset_hole_width / 2, r2=inset_hole_width / 2, h=length);
+      translate([0, inset_hole_width, 0]) cylinder($fn = 100, r1=inset_hole_width / 2, r2=inset_hole_width / 2, h=length);
+    }
+  }
+}
+
 
 // not meant to be printed, just for dreaming
 module dummies() {
@@ -298,6 +320,8 @@ module dummies() {
 
   positioned_camera_dummy();
 }
+
+dummies();
 
 // body
 union() {
@@ -383,6 +407,23 @@ union() {
     inset_hole(h = 10) {
       translate([-inset_hole_width / 2, 0, 0]) cube([inset_hole_width, inset_hole_width - bmo_case_thickness, 10]);
     }
+  }
+
+
+  translate([
+    bmo_case_thickness + inset_hole_width / 2,
+    bmo_case_thickness + inset_hole_width / 2,
+    bmo_case_thickness * 2
+  ]) {
+    corner_inset_hole();
+  }
+
+  translate([
+    bmo_body_width - (bmo_case_thickness + inset_hole_width / 2),
+    bmo_case_thickness + inset_hole_width / 2,
+    bmo_case_thickness * 2
+  ]) rotate([0, 0, 90]) {
+    corner_inset_hole();
   }
 }
 
