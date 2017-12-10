@@ -282,7 +282,7 @@ module positioned_camera_inset_holes() {
   }
 }
 
-module corner_inset_hole(length = 20) {
+module corner_inset_hole(length = bmo_body_zheight - bmo_case_thickness * 3) {
   inset_hole(h = length, flip = true) {
     difference() {
       union() {
@@ -321,7 +321,7 @@ module dummies() {
   positioned_camera_dummy();
 }
 
-dummies();
+//dummies();
 
 // body
 union() {
@@ -341,7 +341,7 @@ union() {
       rotate([180, 0, 0])
         punch_pi_holes();
 
-    cube(size = [bmo_body_width, bmo_body_height / 2, bmo_body_zheight]);
+    //cube(size = [bmo_body_width, bmo_body_height / 2, bmo_body_zheight]);
   }
 
   translate([bmo_screen_punch_x, bmo_screen_punch_y, bmo_body_zheight - bmo_screen_punch_radius]) screen_punch_rims();
@@ -409,7 +409,6 @@ union() {
     }
   }
 
-
   translate([
     bmo_case_thickness + inset_hole_width / 2,
     bmo_case_thickness + inset_hole_width / 2,
@@ -428,20 +427,20 @@ union() {
 }
 
 // body bottom
-union() {
-  difference() {
-    color([0, 0, 1, 0.75]) body(size = [bmo_body_width, bmo_body_height, bmo_body_zheight]);
-    translate([0, 0, bmo_body_radius])
-      cube(size = [bmo_body_width, bmo_body_height, bmo_body_zheight]);
-    // pi punch holes
-    translate([
-        bmo_body_width - pi_pcb_width - bmo_case_thickness,
-        bmo_body_height - bmo_case_thickness,
-        pi_hardware_zheight + bmo_body_radius
-      ])
-        rotate([180, 0, 0])
-          punch_pi_holes();
-    positioned_camera_dummy();
-  }
-  color([1, 0, 0.5]) positioned_camera_inset_holes();
-}
+// union() {
+//   difference() {
+//     color([0, 0, 1, 0.75]) body(size = [bmo_body_width, bmo_body_height, bmo_body_zheight]);
+//     translate([0, 0, bmo_body_radius])
+//       cube(size = [bmo_body_width, bmo_body_height, bmo_body_zheight]);
+//     // pi punch holes
+//     translate([
+//         bmo_body_width - pi_pcb_width - bmo_case_thickness,
+//         bmo_body_height - bmo_case_thickness,
+//         pi_hardware_zheight + bmo_body_radius
+//       ])
+//         rotate([180, 0, 0])
+//           punch_pi_holes();
+//     positioned_camera_dummy();
+//   }
+//   color([1, 0, 0.5]) positioned_camera_inset_holes();
+// }
