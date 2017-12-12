@@ -424,23 +424,87 @@ union() {
   ]) rotate([0, 0, 90]) {
     corner_inset_hole();
   }
+
+  translate([
+    bmo_body_width - (bmo_case_thickness + inset_hole_width / 2),
+    bmo_body_height / 2 - bmo_case_thickness,
+    bmo_case_thickness * 2
+  ]) rotate([0, 0, 180]) {
+    corner_inset_hole(length = bmo_body_zheight / 2);
+  }
+
+  translate([
+    bmo_case_thickness + inset_hole_width / 2,
+    bmo_body_height / 2 - bmo_case_thickness,
+    bmo_case_thickness * 2
+  ]) rotate([0, 0, 270]) {
+    corner_inset_hole(length = bmo_body_zheight / 2);
+  }
+
+  translate([
+    bmo_case_thickness,
+    bmo_body_height / 2,
+    bmo_case_thickness * 2
+  ]) cube(size = [
+    bmo_body_width - (bmo_case_thickness * 2),
+    bmo_case_thickness,
+    bmo_body_zheight / 2
+  ]);
 }
 
+
 // body bottom
-// union() {
-//   difference() {
-//     color([0, 0, 1, 0.75]) body(size = [bmo_body_width, bmo_body_height, bmo_body_zheight]);
-//     translate([0, 0, bmo_body_radius])
-//       cube(size = [bmo_body_width, bmo_body_height, bmo_body_zheight]);
-//     // pi punch holes
-//     translate([
-//         bmo_body_width - pi_pcb_width - bmo_case_thickness,
-//         bmo_body_height - bmo_case_thickness,
-//         pi_hardware_zheight + bmo_body_radius
-//       ])
-//         rotate([180, 0, 0])
-//           punch_pi_holes();
-//     positioned_camera_dummy();
-//   }
-//   color([1, 0, 0.5]) positioned_camera_inset_holes();
-// }
+
+difference() {
+  union() {
+    difference() {
+      color([0, 0, 1, 0.75]) body(size = [bmo_body_width, bmo_body_height, bmo_body_zheight]);
+      translate([0, 0, bmo_body_radius])
+        cube(size = [bmo_body_width, bmo_body_height, bmo_body_zheight]);
+      // pi punch holes
+      translate([
+          bmo_body_width - pi_pcb_width - bmo_case_thickness,
+          bmo_body_height - bmo_case_thickness,
+          pi_hardware_zheight + bmo_body_radius
+        ])
+          rotate([180, 0, 0])
+            punch_pi_holes();
+      positioned_camera_dummy();
+    }
+    color([1, 0, 0.5]) positioned_camera_inset_holes();
+  }
+
+  translate([0, 0, -10]) {
+    translate([
+      bmo_case_thickness + inset_hole_width / 2,
+      bmo_case_thickness + inset_hole_width / 2,
+      bmo_case_thickness * 2
+    ]) {
+      cylinder(h = 20, r1 = 2, r2 = 2);
+    }
+
+    translate([
+      bmo_body_width - (bmo_case_thickness + inset_hole_width / 2),
+      bmo_case_thickness + inset_hole_width / 2,
+      bmo_case_thickness * 2
+    ]) rotate([0, 0, 90]) {
+      cylinder(h = 20, r1 = 2, r2 = 2);
+    }
+
+    translate([
+      bmo_body_width - (bmo_case_thickness + inset_hole_width / 2),
+      bmo_body_height / 2 - bmo_case_thickness,
+      bmo_case_thickness * 2
+    ]) rotate([0, 0, 180]) {
+      cylinder(h = 20, r1 = 2, r2 = 2);
+    }
+
+    translate([
+      bmo_case_thickness + inset_hole_width / 2,
+      bmo_body_height / 2 - bmo_case_thickness,
+      bmo_case_thickness * 2
+    ]) rotate([0, 0, 270]) {
+      cylinder(h = 20, r1 = 2, r2 = 2);
+    }
+  }
+}
